@@ -1,0 +1,29 @@
+# Self-contained inference config for LM-SPT 12.5 Hz (semantic 16384 / acoustic 4096, 8 VQ).
+# Composed standalone by lmspt.infer.get_model -> hydra.utils.instantiate(cfg.model).
+# No external config-group interpolations: everything needed to rebuild the module is inlined.
+model:
+  _target_: lmspt.model_codec.lmspt_model.LMSPT
+  sample_rate: 24000
+  encoder_rates: [4, 5, 6, 8, 2]   # 4*5*6*8*2 = 1920x downsample -> 12.5 Hz
+  decoder_rates: [2, 8, 6, 5, 4]
+  encoder_dim: 32
+  latent_dim: 1024
+  decoder_dim: 1536
+  n_codebooks: 8
+  n_semantic_codebooks: 1
+  quantizer_dropout: 0.5
+  semantic_codebook_size: 16384
+  acoustic_codebook_size: 4096
+  semantic_codebook_dim: 8
+  acoustic_codebook_dim: 8
+  semantic_quantizer: rvq
+  use_shared_encoder: false
+  semantic_subtraction: true
+  # aux_decoder is only used for training-time semantic distillation; it is unused at
+  # inference (encode/decode) but kept so the published weights load with strict=True.
+  aux_decoder:
+    _target_: lmspt.model_codec.dac_model.Decoder
+    input_channel: 1024
+    channels: 128
+    rates: [8, 8, 5, 4]
+    sample_rate: 16000

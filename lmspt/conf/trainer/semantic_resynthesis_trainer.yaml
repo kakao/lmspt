@@ -1,0 +1,39 @@
+
+batch_size: 10
+
+exp_name: audio_codec_trainer
+args:
+  exp_name: ${..exp_name}
+  log_level: DEBUG
+  seed: 43
+  resume: false
+  resume_type: resume
+
+cfg:
+  log_dir: ${machine.log_dir}
+  model: ${model.model}
+  teacher_model: ${teacher.model}
+  discriminator_model: ${model.discriminator}
+  train:
+    learning_rate: 2e-4
+    gradient_accumulation_step: 1
+    find_unused_parameters: false
+    tracker: tensorboard
+    max_epoch: 1000
+    save_checkpoint_stride: 
+      - 5000
+    eval_steps: 5000
+    logging_steps: 100
+    keep_last: [1]
+    optimizer:
+      _target_: torch.optim.AdamW
+      _partial_: true
+      betas: [0.8, 0.9]
+      # betas: [0.9, 0.99]
+    scheduler:
+      warmup_steps: 100
+      min_lr: 5e-5
+trainer:
+  _target_: lmspt.model_codec.trainer.SemanticResynthesisDistillationTrainer
+  cfg: ${..cfg}
+  args: ${..args}

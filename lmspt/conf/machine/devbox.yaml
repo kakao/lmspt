@@ -1,0 +1,5 @@
+# Machine-specific paths. Edit these to match your environment.
+hf_home: /path/to/hf_home          # HuggingFace cache (e.g. Whisper teacher weights)
+data_home: /path/to/datasets       # root directory containing your dataset manifests
+log_dir: ./output_checkpoints      # where checkpoints and logs are written
+init_model_path: /path/to/checkpoints  # base dir for resuming (see commented resume args in lmspt_train.yaml)

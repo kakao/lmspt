@@ -1,0 +1,23 @@
+SAMPLE_RATE: 24000
+model:
+  _target_: lmspt.model_codec.lmspt_model.LMSPT
+  sample_rate: ${..SAMPLE_RATE}
+  encoder_rates: [4,5,6,8,2]
+  decoder_rates: [2,8,6,5,4]
+  encoder_dim: 32
+  latent_dim: ${aux_decoder.latent_dim}
+  decoder_dim: 1536
+  n_codebooks: 8
+  n_semantic_codebooks: 1
+  quantizer_dropout: 0.5
+  semantic_codebook_size: 16384
+  acoustic_codebook_size: 4096
+  semantic_codebook_dim: 8
+  acoustic_codebook_dim: 8
+  semantic_quantizer: rvq
+  aux_decoder: ${aux_decoder.model}
+  use_shared_encoder: False
+  semantic_subtraction: True
+discriminator:
+  _target_: lmspt.model_codec.Discriminator
+  sample_rate: ${..SAMPLE_RATE}

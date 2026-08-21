@@ -1,0 +1,34 @@
+defaults:
+  - machine: devbox
+  - aux_decoder: aux_decoder_12hz_16k
+  - model: lmspt_12hz_8vq
+  - teacher: whisper
+  - data: librispeech
+  - trainer: semantic_resynthesis_trainer
+  - _self_
+hydra:
+  run:
+    dir: ${machine.log_dir}/${trainer.exp_name}
+
+trainer:
+  exp_name: lmspt_12hz_8vq
+  batch_size: 8
+  eval_batch_size: 16
+  segment_size: 6
+  eval_segment_size: 8
+  # args:
+  #   resume: true
+  #   reset_steps: true
+  #   resume_from_ckpt_path: ${machine.init_model_path}/<exp_name>/checkpoint/<epoch-XXX_step-YYYYYY>/
+  cfg:
+    lambda_semantic_commitment_loss: 0.25
+    lambda_semantic_codebook_loss: 1.0
+    lambda_distill_loss: 500.0
+    train:
+      max_steps: -1
+      max_epoch: 20
+      eval_steps: 3000
+      save_checkpoint_stride:
+        - 3000
+      keep_last: [1]
+      disable_mixed_precision: true

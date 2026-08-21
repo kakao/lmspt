@@ -1,0 +1,8 @@
+latent_dim: 1024
+sample_rate: 16000
+model:
+  _target_: lmspt.model_codec.dac_model.Decoder
+  input_channel: ${..latent_dim}
+  channels: 128
+  rates: [8,8,5,4]
+  sample_rate: ${..sample_rate}

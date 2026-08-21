@@ -1,0 +1,35 @@
+train_dataset:
+  _target_: lmspt.dataset.codec_dataset.AudioSemanticFeatDataset
+  root: "${machine.data_home}/ufo_audio_meta/librispeech"
+  sample_rate: ${model.SAMPLE_RATE}
+  segment_size: ${trainer.segment_size}
+  feature_extractor: ${teacher.feature_extractor}
+  manifest:
+    - "${data.train_dataset.root}/train_written.jsonl"
+
+valid_dataset:
+  _target_: lmspt.dataset.codec_dataset.AudioSemanticFeatDataset
+  root: "${machine.data_home}/ufo_audio_meta/librispeech"
+  sample_rate: ${model.SAMPLE_RATE}
+  segment_size: ${trainer.eval_segment_size}
+  feature_extractor: ${teacher.feature_extractor}
+  manifest:
+    - "${data.valid_dataset.root}/valid_written.jsonl"
+
+train_loader:
+  _target_: torch.utils.data.DataLoader
+  dataset: ${data.train_dataset}
+  batch_size: ${trainer.batch_size}
+  num_workers: 16
+  shuffle: true
+  collate_fn:
+    _target_: lmspt.dataset.codec_dataset.AudioSemanticFeatCollator
+
+valid_loader:
+  _target_: torch.utils.data.DataLoader
+  dataset: ${data.valid_dataset}
+  batch_size: ${trainer.eval_batch_size}
+  num_workers: 16
+  shuffle: false
+  collate_fn:
+    _target_: lmspt.dataset.codec_dataset.AudioSemanticFeatCollator
